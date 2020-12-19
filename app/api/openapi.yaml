@@ -1,0 +1,242 @@
+openapi: 3.0.1
+info: { version: 0.1.1, title: y0}
+paths:
+  /health:
+    get:
+      summary: Very basic health cheack
+      x-openapi-router-controller: controllers.player_controller
+      operationId: health_check
+      responses:
+        '200':
+          description: Health check successful
+          content:
+             application/json:
+                schema: {}
+  /players:
+    get:
+      summary: Retrieve a name
+      x-openapi-router-controller: controllers.player_controller
+      operationId: get_many
+      parameters:
+          - name: "result_from"
+            in: "query"
+            required: false
+            description: "Result to start with."
+            allowEmptyValue: true
+            x-nullable: true
+            schema:
+                type: "integer"
+                format: "int64"
+                default: 0
+                minimum: 0 
+          - name: "size"
+            in: "query"
+            required: false
+            description: "The maximum draft_number of results to return."
+            allowEmptyValue: true
+            x-nullable: true
+            schema:
+                type: "integer"
+                format: "int64"
+                default: 100
+                minimum: 0
+                maximum: 1000
+          - name: "sort"
+            in: "query"
+            required: false
+            description: "Sort the resuls if true"
+            allowEmptyValue: true
+            x-nullable: true
+            schema:
+                type: "boolean"
+                default: false
+      responses:
+        '200':
+          description: Name successfully retrieved
+          content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/GetManyOperationOutput"
+        default:
+          description: Operation failed due to an unexpected error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetManyOperationOutput"
+  /player:                 
+    post:
+      summary: Add a player
+      x-openapi-router-controller: controllers.player_controller
+      operationId: create_one
+      requestBody:
+        description: "Player details"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Player"
+      responses:
+        '201':
+          description: Player successfully created
+          content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/SuccessfulOperationOutput"
+        default:
+          description: Operation failed due to an unexpected error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedOperationOutput"
+    get:
+      summary: Retrieve a name
+      x-openapi-router-controller: controllers.player_controller
+      operationId: get_one
+      parameters:
+          - name: "name"
+            in: "query"
+            required: true
+            description: "Result to start with."
+            schema:
+                type: "string"
+
+      responses:
+        '200':
+          description: Name successfully retrieved
+          content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Player"
+        default:
+          description: Operation failed due to an unexpected error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedOperationOutput" 
+    put:
+      summary: Update a player
+      x-openapi-router-controller: controllers.player_controller
+      operationId: update_one
+      requestBody:
+        description: "Player details"
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Player"
+      responses:
+        '200':
+          description: Player successfully updated
+          content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/Player"
+        default:
+          description: Operation failed due to an unexpected error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedOperationOutput"
+    delete:
+      summary: Delete a player
+      x-openapi-router-controller: controllers.player_controller
+      operationId: delete_one
+      parameters:
+          - name: "name"
+            in: "query"
+            required: true
+            description: "Result to start with."
+            schema:
+                type: "string"
+      responses:
+        '200':
+          description: Player successfully deleted
+          content:
+             application/json:
+               schema:
+                 $ref: "#/components/schemas/SuccessfulOperationOutput"
+        default:
+          description: Operation failed due to an unexpected error.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FailedOperationOutput"
+components:
+  schemas:
+    GetManyOperationOutput:
+      type: "object"
+      properties:
+        results:
+          type: "object"
+          description: |
+              All names inside the database
+        total:
+          type: "integer"
+          description: |
+              Total draft_number of results for the query
+        next_page:
+          type: "integer"
+          description: |
+              The location in results we are in
+        error:
+          type: "string"
+          description: |
+              Sends the error if there is any.
+    SuccessfulOperationOutput:
+      type: "object"
+      required: ["success"]
+      properties:
+        success:
+          type: "boolean"
+          description: |
+              Indicates whether the operation was successful or not.
+    FailedOperationOutput:              
+      type: "object"
+      required: ["error"]
+      properties:
+        error:
+          type: "string"
+          description: |
+              Sends the error if there is any. 
+    Player:
+      type: "object"
+      required: ["name", "birth_date", "nationality", "weight", "height", "position"]
+      properties:
+        name:
+          type: "string"
+        birth_date:
+          type: "string"
+        nationality:           
+          type: "string"
+        weight:
+          type: "integer"
+          format: "int64"
+        height:
+          type: "string"
+        position:
+          type: "string"
+        active:
+          type: "boolean"
+        school:
+          type: "string"
+        team:
+          type: "string"
+        jersey:
+          type: "integer"
+          format: "int64"
+        draft:
+          type: "object"
+          $ref: "#/components/schemas/Draft"
+    Draft:
+      type: "object"
+      required: ["draft_year", "draft_round", "draft_number"]
+      properties:
+        draft_year:
+          type: "integer"
+          format: "int64"
+        draft_round:
+          type: "integer"
+          format: "int64"
+        draft_number:
+          type: "integer"
+          format: "int64"

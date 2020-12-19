@@ -1,0 +1,65 @@
+{
+	"collMod": "players",
+	"validator": {
+		"$jsonSchema": {
+			"bsonType": "object",
+			"required": ["name", "birth_date", "nationality", "weight", "height", "position"],
+			"properties": {
+				"name": {
+					"bsonType": "string",
+					"description": "must be a string and is required"
+				},
+				"birth_date": {
+					"bsonType": "date",
+					"description": "must be a string and is required"
+				},
+				"nationality": {
+					"bsonType": "string",
+					"description": "must be a string and is required"
+				},
+				"height": {
+					"bsonType": "string",
+					"description": "must be a string and is required"
+				},
+				"weight": {
+					"bsonType": "int",
+					"description": "must be a string and is required"
+				},
+				"jersey": {
+					"bsonType": "int",
+					"description": "must be a string and is required"
+				},
+				"team": {
+					"bsonType": "string",
+					"description": "must be a string and is required"
+				},
+				"position": {
+					"bsonType": "string",
+					"pattern": "^[a-zA-Z- ]+$",
+					"description": "must be a string and is required"
+				},
+				"active": {
+					"bsonType": "bool",
+					"description": "must be a string and is required"
+				},
+				"school": {
+					"description": "must be a string and is required"
+				},
+				"draft": {
+					"bsonType": "object",
+					"properties": {
+						"draft_year": {
+							"bsonType": "int"
+						},
+						"draft_round": {
+							"bsonType": "int"
+						},
+						"draft_number": {
+							"bsonType": "int"
+						}
+					}
+				}
+			}
+		}
+	}
+}

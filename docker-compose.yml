@@ -1,0 +1,31 @@
+version: "3"
+services:
+  web:
+    restart: always
+    build: .
+    depends_on:
+      - mongo
+    environment:
+      MONGODB_HOST: mongo
+      MONGODB_USERNAME: $MONGODB_USERNAME
+      MONGODB_PASSWORD: $MONGODB_PASSWORD
+    ports:
+      - "8080:8080"
+    links:
+      - mongo
+    healthcheck:
+        test: ["CMD-SHELL", "curl --silent --fail localhost:8080/health || exit 1"]
+        interval: 30s
+        timeout: 30s
+        retries: 3
+  mongo:
+    ports:
+      - "27017:27017"
+    image: mongo
+    environment:
+     - MONGO_INITDB_DATABASE=$MONGODB_DATABASE
+     - MONGO_INITDB_ROOT_USERNAME=$MONGODB_USERNAME
+     - MONGO_INITDB_ROOT_PASSWORD=$MONGODB_PASSWORD
+    volumes:
+     - /opt/db:/data/db
+    restart: always

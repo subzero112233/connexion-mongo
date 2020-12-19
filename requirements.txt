@@ -1,0 +1,5 @@
+pymongo==3.10.1
+connexion==2.7.0
+gevent==20.9.0
+greenlet==0.4.17
+nba_api==1.1.9
